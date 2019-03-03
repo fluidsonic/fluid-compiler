@@ -31,10 +31,10 @@ Example
 import com.github.fluidsonic.fluid.compiler.*
 
 val result = KotlinCompiler()
+    .includesCurrentClasspath()
     .jvmTarget(KotlinJvmTarget.v1_8)
     .processors(MyAnnotationProcessor())
     .sourceFiles(File("sources/MyFile.kt"))
-    .usingSystemClasspath()
     .compile()
 
 // result.exitCode contains the exit code of the compiler

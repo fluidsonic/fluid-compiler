@@ -18,6 +18,8 @@ class KotlinCompiler {
 	@PublishedApi
 	internal val arguments = K2JVMCompilerArguments()
 
+	private var includesCurrentClasspath = false
+
 	@PublishedApi
 	internal val kaptOptions = KaptOptions.Builder()
 
@@ -25,8 +27,6 @@ class KotlinCompiler {
 	internal var kaptOptionsModified = false
 
 	internal val processors = mutableListOf<Processor>()
-
-	private var usesSystemClasspath = false
 
 
 	fun compile(): CompilationResult {
@@ -54,12 +54,12 @@ class KotlinCompiler {
 			arguments.pluginClasspaths = (arguments.pluginClasspaths.orEmpty()
 				.filter { it != servicesPath } + servicesPath).toTypedArray()
 
-			if (usesSystemClasspath) {
+			if (includesCurrentClasspath) {
 				arguments.classpath = arguments.classpath
 					?.split(':')
 					?.toSet()
 					.orEmpty()
-					.let { it + systemClasspath }
+					.let { it + currentClasspath }
 					.joinToString(":")
 
 				if (arguments.kotlinHome.isNullOrEmpty())
@@ -144,6 +144,11 @@ class KotlinCompiler {
 	}
 
 
+	fun includesCurrentClasspath(includesCurrentClasspath: Boolean = true): KotlinCompiler = apply {
+		this.includesCurrentClasspath = includesCurrentClasspath
+	}
+
+
 	fun jvmTarget(jvmTarget: KotlinJvmTarget): KotlinCompiler = apply {
 		arguments.jvmTarget = jvmTarget.string
 	}
@@ -183,12 +188,10 @@ class KotlinCompiler {
 	}
 
 
-	fun usingSystemClasspath(usesSystemClasspath: Boolean = true): KotlinCompiler = apply {
-		this.usesSystemClasspath = usesSystemClasspath
-	}
-
-
 	companion object {
+
+		private val currentClasspath = findAllClasspathEntries().filter(File::exists).toSet()
+
 
 		private val servicesPath = KotlinCompiler::class.java.let { clazz ->
 			PathManager.getResourceRoot(clazz, "/" + clazz.name.replace('.', '/') + ".class")
@@ -199,8 +202,5 @@ class KotlinCompiler {
 				}
 				?.let { it.absolutePath }
 		} ?: "resources" // fall back to working directory = project path
-
-
-		private val systemClasspath = findAllClasspathEntries().filter(File::exists).toSet()
 	}
 }
