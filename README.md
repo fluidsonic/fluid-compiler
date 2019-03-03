@@ -18,7 +18,7 @@ in the group `com.github.fluidsonic`.
 `build.gradle.kts`:
 ```kotlin
 dependencies {
-    implementation("com.github.fluidsonic:fluid-compiler:0.9.0")
+    implementation("com.github.fluidsonic:fluid-compiler:0.9.1")
 }
 ```
 
