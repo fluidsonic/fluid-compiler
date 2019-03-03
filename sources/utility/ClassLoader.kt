@@ -1,9 +1,63 @@
 package com.github.fluidsonic.fluid.compiler
 
-import sun.misc.Unsafe
+import com.github.fluidsonic.fluid.stdlib.*
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
+
+
+private const val appClassLoaderName = "jdk.internal.loader.ClassLoaders\$AppClassLoader"
+
+
+private fun ClassLoader.addUrl(url: URL): Boolean {
+	try {
+		val classPath = urlClassPath ?: return false
+		val addUrl = classPath::class.java.getDeclaredMethod("addURL", URL::class.java) ?: return false
+		addUrl.invoke(classPath, url)
+
+		return true
+	}
+	catch (e: Exception) {
+		return false
+	}
+}
+
+
+private val ClassLoader.urlClassPath: Any?
+	get() = try {
+		(this is URLClassLoader || this::class.java.name == appClassLoaderName).thenTake {
+			this::class.java.getDeclaredField("ucp")
+				?.also { it.isAccessible = true }
+				?.let { it.get(this) }
+		}
+	}
+	catch (e: Exception) {
+		null
+	}
+
+
+@Suppress("UNCHECKED_CAST")
+private val ClassLoader.urls: Collection<URL>?
+	get() = when {
+		this is URLClassLoader ->
+			urLs.toList()
+
+		this::class.java.name == appClassLoaderName ->
+			try {
+				urlClassPath?.let { urlClassPath ->
+					urlClassPath::class.java.getDeclaredMethod("getURLs")
+						?.invoke(urlClassPath)
+						?.let { it as? Array<URL> }
+						?.toList()
+				}
+			}
+			catch (e: Exception) {
+				null
+			}
+
+		else ->
+			null
+	}
 
 
 internal fun findAllClasspathEntries(): Set<File> =
@@ -31,29 +85,44 @@ private fun findSystemPropertyClasspathEntries(): Collection<File> =
 
 @Suppress("UNCHECKED_CAST")
 private fun ClassLoader.findAllClasspathEntries(): Collection<File> =
-	when {
-		this is URLClassLoader ->
-			urLs.map { File(it.toURI()) }
+	urls?.map { File(it.toURI()) }.orEmpty() + parent?.findAllClasspathEntries().orEmpty()
 
-		this::class.java.name.startsWith("jdk.internal.loader.ClassLoaders$") ->
-			try {
-				val field = Unsafe::class.java.getDeclaredField("theUnsafe")!!.also { it.isAccessible = true }
-				val unsafe = field.get(null) as Unsafe
 
-				// jdk.internal.loader.ClassLoaders.AppClassLoader.ucp
-				val ucpField = this::class.java.getDeclaredField("ucp")!!
-				val ucp = unsafe.getObject(this, unsafe.objectFieldOffset(ucpField))!!
+internal fun loadToolsJarIfNeeded(): Boolean {
+	try {
+		Class.forName("com.sun.tools.javac.util.Context")
+		return true
+	}
+	catch (e: ClassNotFoundException) {
+		// not loaded
+	}
 
-				// jdk.internal.loader.URLClassPath.path
-				val pathField = ucpField.type.getDeclaredField("path")!!
-				val path = unsafe.getObject(ucp, unsafe.objectFieldOffset(pathField)) as List<URL>
+	val toolsJar = findToolsJar() ?: return false
+	ClassLoader.getSystemClassLoader().addUrl(toolsJar.toURI().toURL())
 
-				path.map { File(it.toURI()) }
-			}
-			catch (e: Exception) {
-				emptyList<File>()
-			}
+	try {
+		Class.forName("com.sun.tools.javac.util.Context")
+		return true
+	}
+	catch (e: ClassNotFoundException) {
+		return false
+	}
+}
 
-		else ->
-			emptyList()
-	} + parent?.findAllClasspathEntries().orEmpty()
+
+private fun findToolsJar() =
+	System.getProperty("java.home").ifEmpty { null }?.let(::File)?.let(::findToolsJar)
+		?: System.getenv("JAVA_HOME").ifEmpty { null }?.let(::File)?.let(::findToolsJar)
+
+
+private fun findToolsJar(javaHome: File): File? {
+	javaHome.resolve("lib/tools.jar").takeIf(File::exists)?.let { return it }
+
+	if (javaHome.name.equals("jre", ignoreCase = true))
+		findToolsJar(javaHome.parentFile)?.let { return it }
+
+	if (javaHome.name.matches(Regex("jre\\d+")) || javaHome.name == "jre${System.getProperty("java.version")}")
+		findToolsJar(javaHome.parentFile.resolve("jdk" + javaHome.name.removePrefix("jre")))
+
+	return null
+}

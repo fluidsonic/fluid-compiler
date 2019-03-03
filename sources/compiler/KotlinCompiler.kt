@@ -60,6 +60,9 @@ class KotlinCompiler {
 		}
 
 		try {
+			if (!loadToolsJarIfNeeded())
+				error("tools.jar is missing in the current classpath and cannot be found in JAVA HOME. Please add it manually to your project.")
+
 			arguments.pluginClasspaths = (arguments.pluginClasspaths.orEmpty()
 				.filter { it != servicesPath } + servicesPath).toTypedArray()
 
