@@ -43,6 +43,42 @@ val result = KotlinCompiler()
 ```
 
 
+### Additional configuration
+
+```kotlin
+    .destinationDirectory(File("output"))
+    .kotlinHome(File("…"))
+    .moduleName("my-module")
+```
+
+
+### Manually setting compiler arguments
+
+```kotlin
+    .arguments {
+        apiVersion = "1.2"
+        languageVersion = "1.2"
+        newInference = true
+    }
+```
+
+For a complete list of all compiler arguments check out
+[K2JVMCompilerArguments](https://github.com/JetBrains/kotlin/blob/master/compiler/cli/cli-common/src/org/jetbrains/kotlin/cli/common/arguments/K2JVMCompilerArguments.kt).
+
+
+### Manually setting Kapt options
+
+```kotlin
+    .kaptOptions {
+        flags += KaptFlag.CORRECT_ERROR_TYPES
+        mode = AptMode.STUBS_AND_APT
+    }
+```
+
+For a complete list of all Kapt options check out
+[KaptOptions](https://github.com/JetBrains/kotlin/blob/master/plugins/kapt3/kapt3-base/src/org/jetbrains/kotlin/kapt3/base/KaptOptions.kt).
+
+
 
 License
 -------
