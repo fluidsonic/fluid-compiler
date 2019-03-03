@@ -34,7 +34,7 @@ val result = KotlinCompiler()
     .includesCurrentClasspath()
     .jvmTarget(KotlinJvmTarget.v1_8)
     .processors(MyAnnotationProcessor())
-    .sourceFiles(File("sources/MyFile.kt"))
+    .sources("sources", "more-sources/Example.kt")
     .compile()
 
 // result.exitCode contains the exit code of the compiler
@@ -46,8 +46,8 @@ val result = KotlinCompiler()
 ### Additional configuration
 
 ```kotlin
-    .destinationDirectory(File("output"))
-    .kotlinHome(File("…"))
+    .destination("output")
+    .kotlinHome("/path/to/kotlin/home")
     .moduleName("my-module")
 ```
 

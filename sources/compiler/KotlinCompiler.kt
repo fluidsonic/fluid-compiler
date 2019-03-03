@@ -10,7 +10,6 @@ import org.jetbrains.kotlin.com.intellij.ide.highlighter.JavaFileType
 import org.jetbrains.kotlin.com.intellij.openapi.application.PathManager
 import org.jetbrains.kotlin.config.Services
 import org.jetbrains.kotlin.idea.KotlinFileType
-import org.jetbrains.kotlin.incremental.destinationAsFile
 import java.io.File
 import javax.annotation.processing.Processor
 
@@ -45,7 +44,7 @@ class KotlinCompiler {
 		val needsDummyKotlinFile = arguments.buildFile == null && !arguments.script && hasOnlyJavaSources(arguments.freeArgs)
 
 		val temporaryOutputDirectory = arguments.destination.isNullOrEmpty().thenTake {
-			createTempDir().also { arguments.destinationAsFile = it }
+			createTempDir().also { arguments.destination = it.path }
 		}
 		val temporaryGeneratedSourcesDirectory = (usesKapt && kaptOptions.sourcesOutputDir == null).thenTake {
 			createTempDir().also { kaptOptions.sourcesOutputDir = it }
@@ -152,9 +151,13 @@ class KotlinCompiler {
 	}
 
 
-	fun destinationDirectory(destinationDirectory: File): KotlinCompiler = apply {
-		arguments.destinationAsFile = destinationDirectory
+	fun destination(destination: File): KotlinCompiler = apply {
+		arguments.destination = destination.canonicalPath
 	}
+
+
+	fun destination(destination: String): KotlinCompiler =
+		destination(File(destination))
 
 
 	fun includesCurrentClasspath(includesCurrentClasspath: Boolean = true): KotlinCompiler = apply {
@@ -178,6 +181,10 @@ class KotlinCompiler {
 	}
 
 
+	fun kotlinHome(kotlinHome: String): KotlinCompiler =
+		kotlinHome(File(kotlinHome))
+
+
 	fun moduleName(moduleName: String): KotlinCompiler = apply {
 		arguments.moduleName = moduleName
 	}
@@ -192,13 +199,22 @@ class KotlinCompiler {
 	}
 
 
-	fun sourceFiles(vararg sourceFiles: File): KotlinCompiler =
-		sourceFiles(sourceFiles.toList())
+	fun sources(vararg sources: File): KotlinCompiler =
+		sources(sources.toList())
 
 
-	fun sourceFiles(sourceFiles: Iterable<File>): KotlinCompiler = apply {
+	fun sources(sourceFiles: Iterable<File>): KotlinCompiler = apply {
 		arguments.freeArgs += sourceFiles.map { it.canonicalPath }
 	}
+
+
+	fun sources(vararg sources: String): KotlinCompiler =
+		sources(sources.map(::File))
+
+
+	@JvmName("sourcesAsString")
+	fun sources(sources: Iterable<String>): KotlinCompiler =
+		sources(sources.map(::File))
 
 
 	companion object {
