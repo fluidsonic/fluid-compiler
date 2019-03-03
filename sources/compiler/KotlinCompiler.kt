@@ -6,8 +6,10 @@ import org.jetbrains.kotlin.cli.common.arguments.K2JVMCompilerArguments
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity.VERBOSE
 import org.jetbrains.kotlin.cli.common.messages.FilteringMessageCollector
 import org.jetbrains.kotlin.cli.jvm.K2JVMCompiler
+import org.jetbrains.kotlin.com.intellij.ide.highlighter.JavaFileType
 import org.jetbrains.kotlin.com.intellij.openapi.application.PathManager
 import org.jetbrains.kotlin.config.Services
+import org.jetbrains.kotlin.idea.KotlinFileType
 import org.jetbrains.kotlin.incremental.destinationAsFile
 import java.io.File
 import javax.annotation.processing.Processor
@@ -16,7 +18,10 @@ import javax.annotation.processing.Processor
 class KotlinCompiler {
 
 	@PublishedApi
-	internal val arguments = K2JVMCompilerArguments()
+	internal val arguments = K2JVMCompilerArguments().apply {
+		compileJava = true
+		useJavac = true
+	}
 
 	private var includesCurrentClasspath = false
 
@@ -30,7 +35,14 @@ class KotlinCompiler {
 
 
 	fun compile(): CompilationResult {
+		// TODO lots of backup here unless we make K2JVMCompilerArguments copyable - but then we have to update the copy method with every compiler update…
+		val initialClasspath = arguments.classpath
+		val initialNoStdlib = arguments.noStdlib
+		val initialPluginClasspaths = arguments.pluginClasspaths
+		val initialFreeArgs = arguments.freeArgs
+
 		val usesKapt = processors.isNotEmpty()
+		val needsDummyKotlinFile = arguments.buildFile == null && !arguments.script && hasOnlyJavaSources(arguments.freeArgs)
 
 		val temporaryOutputDirectory = arguments.destination.isNullOrEmpty().thenTake {
 			createTempDir().also { arguments.destinationAsFile = it }
@@ -44,11 +56,9 @@ class KotlinCompiler {
 		val temporaryGeneratedStubsDirectory = (usesKapt && kaptOptions.stubsOutputDir == null).thenTake {
 			createTempDir().also { kaptOptions.stubsOutputDir = it }
 		}
-
-		// TODO lots of backup here unless we make K2JVMCompilerArguments copyable - but then we have to update the copy method with every compiler update…
-		val initialClasspath = arguments.classpath
-		val initialNoStdlib = arguments.noStdlib
-		val initialPluginClasspaths = arguments.pluginClasspaths
+		val dummyKotlinFile = needsDummyKotlinFile.thenTake {
+			createTempFile(suffix = ".kt").also { arguments.freeArgs += it.canonicalPath }
+		}
 
 		try {
 			arguments.pluginClasspaths = (arguments.pluginClasspaths.orEmpty()
@@ -106,6 +116,7 @@ class KotlinCompiler {
 		}
 		finally {
 			arguments.classpath = initialClasspath
+			arguments.freeArgs = initialFreeArgs
 			arguments.noStdlib = initialNoStdlib
 			arguments.pluginClasspaths = initialPluginClasspaths
 
@@ -126,9 +137,11 @@ class KotlinCompiler {
 					temporaryGeneratedStubsDirectory.deleteRecursively()
 					kaptOptions.stubsOutputDir = null
 				}
+
+				dummyKotlinFile?.delete()
 			}
 			catch (e: Exception) {
-				println("Failed deleting temporary directory: $e")
+				println("Failed deleting temporary file or directory: $e")
 			}
 		}
 	}
@@ -203,4 +216,18 @@ class KotlinCompiler {
 				?.let { it.canonicalPath }
 		} ?: File("resources").canonicalPath // fall back to working directory = project path
 	}
+}
+
+
+private fun hasOnlyJavaSources(paths: Collection<String>): Boolean {
+	var hasJavaSources = false
+
+	for (path in paths)
+		for (file in File(path).walkTopDown().filter(File::isFile))
+			when (file.extension) {
+				JavaFileType.INSTANCE.defaultExtension -> hasJavaSources = true
+				KotlinFileType.EXTENSION, "kts" -> return false
+			}
+
+	return hasJavaSources
 }
