@@ -200,7 +200,7 @@ class KotlinCompiler {
 					if (file.isFile) file // in JAR
 					else file.parentFile.resolve("resources") // run from IntelliJ IDEA
 				}
-				?.let { it.absolutePath }
-		} ?: "resources" // fall back to working directory = project path
+				?.let { it.canonicalPath }
+		} ?: File("resources").canonicalPath // fall back to working directory = project path
 	}
 }
