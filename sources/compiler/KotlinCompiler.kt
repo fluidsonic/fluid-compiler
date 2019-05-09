@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.com.intellij.ide.highlighter.*
 import org.jetbrains.kotlin.com.intellij.openapi.application.*
 import org.jetbrains.kotlin.config.*
 import org.jetbrains.kotlin.idea.*
+import org.jetbrains.kotlin.kapt3.base.incremental.*
 import java.io.*
 import javax.annotation.processing.*
 
@@ -87,7 +88,7 @@ class KotlinCompiler {
 					catch (e: Exception) {
 						throw IllegalStateException("Kapt configured incorrectly: ${e.message}", e)
 					},
-					processors = processors.toList()
+					processors = processors.map { IncrementalProcessor(processor = it, kind = DeclaredProcType.NON_INCREMENTAL) }
 				)
 			}
 

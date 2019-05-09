@@ -1,10 +1,10 @@
 package com.github.fluidsonic.fluid.compiler
 
 import org.jetbrains.kotlin.base.kapt3.*
-import javax.annotation.processing.*
+import org.jetbrains.kotlin.kapt3.base.incremental.*
 
 
 internal class KaptConfiguration(
 	val options: KaptOptions,
-	val processors: Collection<Processor>
+	val processors: Collection<IncrementalProcessor>
 )
