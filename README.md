@@ -1,7 +1,7 @@
 fluid-compiler
 ==============
 
-[![Kotlin 1.3.21](https://img.shields.io/badge/Kotlin-1.3.21-blue.svg)](http://kotlinlang.org)
+[![Kotlin 1.3.31](https://img.shields.io/badge/Kotlin-1.3.31-blue.svg)](http://kotlinlang.org)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.fluidsonic/fluid-compiler.svg)](https://search.maven.org/search?q=g:com.github.fluidsonic%20a:fluid-compiler)
 [![#fluid-libraries Slack Channel](https://img.shields.io/badge/slack-%23fluid--libraries-543951.svg)](https://kotlinlang.slack.com/messages/C7UDFSVT2/)
 
@@ -18,7 +18,7 @@ in the group `com.github.fluidsonic`.
 `build.gradle.kts`:
 ```kotlin
 dependencies {
-    implementation("com.github.fluidsonic:fluid-compiler:0.9.3")
+    implementation("com.github.fluidsonic:fluid-compiler:0.9.4")
 }
 ```
 

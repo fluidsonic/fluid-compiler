@@ -6,7 +6,7 @@ plugins {
 
 fluidJvmLibrary {
 	name = "fluid-compiler"
-	version = "0.9.3"
+	version = "0.9.4"
 }
 
 fluidJvmLibraryVariant {
@@ -18,5 +18,5 @@ dependencies {
 	api(fluid("stdlib", "0.9.4"))
 
 	api("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.3.31")
-	api("org.jetbrains.kotlin:kotlin-annotation-processing:1.3.31")
+	api("org.jetbrains.kotlin:kotlin-annotation-processing-embeddable:1.3.31")
 }
