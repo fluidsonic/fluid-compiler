@@ -1,33 +1,27 @@
 package com.github.fluidsonic.fluid.compiler
 
-import org.jetbrains.kotlin.analyzer.AnalysisResult
-import org.jetbrains.kotlin.base.kapt3.AptMode
-import org.jetbrains.kotlin.base.kapt3.KaptFlag
-import org.jetbrains.kotlin.base.kapt3.KaptOptions
-import org.jetbrains.kotlin.base.kapt3.logString
-import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
-import org.jetbrains.kotlin.cli.common.messages.MessageRenderer
-import org.jetbrains.kotlin.cli.common.messages.PrintingMessageCollector
-import org.jetbrains.kotlin.cli.jvm.config.JavaSourceRoot
-import org.jetbrains.kotlin.cli.jvm.config.JvmClasspathRoot
-import org.jetbrains.kotlin.com.intellij.mock.MockProject
-import org.jetbrains.kotlin.com.intellij.openapi.project.Project
-import org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar
-import org.jetbrains.kotlin.config.CommonConfigurationKeys
-import org.jetbrains.kotlin.config.CompilerConfiguration
-import org.jetbrains.kotlin.config.JVMConfigurationKeys
-import org.jetbrains.kotlin.container.ComponentProvider
-import org.jetbrains.kotlin.context.ProjectContext
-import org.jetbrains.kotlin.descriptors.ModuleDescriptor
-import org.jetbrains.kotlin.extensions.StorageComponentContainerContributor
-import org.jetbrains.kotlin.kapt3.Kapt3ComponentRegistrar
-import org.jetbrains.kotlin.kapt3.base.Kapt
-import org.jetbrains.kotlin.kapt3.base.util.KaptLogger
-import org.jetbrains.kotlin.kapt3.util.MessageCollectorBackedKaptLogger
-import org.jetbrains.kotlin.psi.KtFile
-import org.jetbrains.kotlin.resolve.BindingTrace
-import org.jetbrains.kotlin.resolve.jvm.extensions.AnalysisHandlerExtension
-import java.io.File
+import org.jetbrains.kotlin.analyzer.*
+import org.jetbrains.kotlin.base.kapt3.*
+import org.jetbrains.kotlin.cli.common.*
+import org.jetbrains.kotlin.cli.common.messages.*
+import org.jetbrains.kotlin.cli.jvm.config.*
+import org.jetbrains.kotlin.com.intellij.mock.*
+import org.jetbrains.kotlin.com.intellij.openapi.project.*
+import org.jetbrains.kotlin.compiler.plugin.*
+import org.jetbrains.kotlin.config.*
+import org.jetbrains.kotlin.container.*
+import org.jetbrains.kotlin.context.*
+import org.jetbrains.kotlin.descriptors.*
+import org.jetbrains.kotlin.extensions.*
+import org.jetbrains.kotlin.kapt3.*
+import org.jetbrains.kotlin.kapt3.base.*
+import org.jetbrains.kotlin.kapt3.base.util.*
+import org.jetbrains.kotlin.kapt3.util.*
+import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.resolve.*
+import org.jetbrains.kotlin.resolve.jvm.extensions.*
+import java.io.*
+import kotlin.collections.set
 
 
 private val kaptConfiguration = ThreadLocal<KaptConfiguration?>()

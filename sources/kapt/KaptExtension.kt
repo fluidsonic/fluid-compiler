@@ -1,11 +1,11 @@
 package com.github.fluidsonic.fluid.compiler
 
-import org.jetbrains.kotlin.base.kapt3.KaptOptions
-import org.jetbrains.kotlin.config.CompilerConfiguration
-import org.jetbrains.kotlin.kapt3.AbstractKapt3Extension
-import org.jetbrains.kotlin.kapt3.base.LoadedProcessors
-import org.jetbrains.kotlin.kapt3.util.MessageCollectorBackedKaptLogger
-import javax.annotation.processing.Processor
+import org.jetbrains.kotlin.base.kapt3.*
+import org.jetbrains.kotlin.config.*
+import org.jetbrains.kotlin.kapt3.*
+import org.jetbrains.kotlin.kapt3.base.*
+import org.jetbrains.kotlin.kapt3.util.*
+import javax.annotation.processing.*
 
 
 internal class KaptExtension(

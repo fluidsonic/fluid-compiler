@@ -1,17 +1,17 @@
 package com.github.fluidsonic.fluid.compiler
 
 import com.github.fluidsonic.fluid.stdlib.*
-import org.jetbrains.kotlin.base.kapt3.KaptOptions
-import org.jetbrains.kotlin.cli.common.arguments.K2JVMCompilerArguments
-import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity.VERBOSE
-import org.jetbrains.kotlin.cli.common.messages.FilteringMessageCollector
-import org.jetbrains.kotlin.cli.jvm.K2JVMCompiler
-import org.jetbrains.kotlin.com.intellij.ide.highlighter.JavaFileType
-import org.jetbrains.kotlin.com.intellij.openapi.application.PathManager
-import org.jetbrains.kotlin.config.Services
-import org.jetbrains.kotlin.idea.KotlinFileType
-import java.io.File
-import javax.annotation.processing.Processor
+import org.jetbrains.kotlin.base.kapt3.*
+import org.jetbrains.kotlin.cli.common.arguments.*
+import org.jetbrains.kotlin.cli.common.messages.*
+import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity.*
+import org.jetbrains.kotlin.cli.jvm.*
+import org.jetbrains.kotlin.com.intellij.ide.highlighter.*
+import org.jetbrains.kotlin.com.intellij.openapi.application.*
+import org.jetbrains.kotlin.config.*
+import org.jetbrains.kotlin.idea.*
+import java.io.*
+import javax.annotation.processing.*
 
 
 class KotlinCompiler {

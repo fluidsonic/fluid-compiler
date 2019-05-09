@@ -1,8 +1,6 @@
 package com.github.fluidsonic.fluid.compiler
 
-import org.jetbrains.kotlin.cli.common.messages.CompilerMessageLocation
-import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
-import org.jetbrains.kotlin.cli.common.messages.MessageCollector
+import org.jetbrains.kotlin.cli.common.messages.*
 
 
 internal class InMemoryMessageCollector : MessageCollector {

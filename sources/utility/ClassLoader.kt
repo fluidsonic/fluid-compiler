@@ -1,9 +1,8 @@
 package com.github.fluidsonic.fluid.compiler
 
 import com.github.fluidsonic.fluid.stdlib.*
-import java.io.File
-import java.net.URL
-import java.net.URLClassLoader
+import java.io.*
+import java.net.*
 
 
 private const val appClassLoaderName = "jdk.internal.loader.ClassLoaders\$AppClassLoader"

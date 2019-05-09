@@ -1,6 +1,6 @@
 package com.github.fluidsonic.fluid.compiler
 
-import java.io.File
+import java.io.*
 
 
 data class GeneratedFile(

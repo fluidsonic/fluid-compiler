@@ -1,7 +1,7 @@
 package com.github.fluidsonic.fluid.compiler
 
-import org.jetbrains.kotlin.base.kapt3.KaptOptions
-import javax.annotation.processing.Processor
+import org.jetbrains.kotlin.base.kapt3.*
+import javax.annotation.processing.*
 
 
 internal class KaptConfiguration(

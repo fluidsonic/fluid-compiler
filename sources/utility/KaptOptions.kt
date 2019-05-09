@@ -1,7 +1,6 @@
 package com.github.fluidsonic.fluid.compiler
 
-import org.jetbrains.kotlin.base.kapt3.KaptFlag
-import org.jetbrains.kotlin.base.kapt3.KaptOptions
+import org.jetbrains.kotlin.base.kapt3.*
 
 
 fun KaptOptions.toBuilder(): KaptOptions.Builder = let { options ->
