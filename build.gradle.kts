@@ -6,7 +6,7 @@ plugins {
 
 fluidJvmLibrary {
 	name = "fluid-compiler"
-	version = "0.9.4"
+	version = "0.9.5"
 }
 
 fluidJvmLibraryVariant {
