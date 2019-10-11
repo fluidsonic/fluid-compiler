@@ -2,7 +2,7 @@ fluid-compiler
 ==============
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.3.50-blue.svg)](http://kotlinlang.org)
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.fluidsonic/fluid-compiler.svg)](https://search.maven.org/search?q=g:com.github.fluidsonic%20a:fluid-compiler)
+[![Bintray](https://img.shields.io/bintray/v/fluidsonic/maven/fluid-compiler)](https://bintray.com/fluidsonic/maven/fluid-compiler)
 [![#fluid-libraries Slack Channel](https://img.shields.io/badge/slack-%23fluid--libraries-543951.svg)](https://kotlinlang.slack.com/messages/C7UDFSVT2/)
 
 Compile Kotlin code and run Kapt annotation processing directly from Kotlin, for example to unit test your annotation processors!
@@ -12,11 +12,14 @@ Compile Kotlin code and run Kapt annotation processing directly from Kotlin, for
 Installation
 ------------
 
-This library is [available in Maven Central](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.fluidsonic%22%20a%3A%22fluid-compiler%22) as `fluid-compiler`
-in the group `com.github.fluidsonic`.
+This library is [available on Bintray](https://bintray.com/fluidsonic/maven/fluid-compiler) as `fluid-compiler` in the group `com.github.fluidsonic`.
 
 `build.gradle.kts`:
 ```kotlin
+repositories {
+    maven("https://dl.bintray.com/fluidsonic/maven/")
+}
+
 dependencies {
     implementation("com.github.fluidsonic:fluid-compiler:0.9.6")
 }
