@@ -1,8 +1,8 @@
 fluid-compiler
 ==============
 
-[![Maven Central](https://img.shields.io/maven-central/v/io.fluidsonic.mongo/fluid-mongo?label=Maven%20Central)](https://search.maven.org/artifact/io.fluidsonic.mongo/fluid-mongo)
-[![JCenter](https://img.shields.io/bintray/v/fluidsonic/kotlin/mongo?label=JCenter)](https://bintray.com/fluidsonic/kotlin/mongo)
+[![Maven Central](https://img.shields.io/maven-central/v/io.fluidsonic.compiler/fluid-compiler?label=Maven%20Central)](https://search.maven.org/artifact/io.fluidsonic.compiler/fluid-compiler)
+[![JCenter](https://img.shields.io/bintray/v/fluidsonic/kotlin/compiler?label=JCenter)](https://bintray.com/fluidsonic/kotlin/compiler)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.3.50-blue.svg)](https://github.com/JetBrains/kotlin/releases/v1.3.50)
 [![#fluid-libraries Slack Channel](https://img.shields.io/badge/slack-%23fluid--libraries-543951.svg)](https://kotlinlang.slack.com/messages/C7UDFSVT2/)
 
