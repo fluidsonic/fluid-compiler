@@ -1,22 +1,18 @@
-import com.github.fluidsonic.fluid.library.*
+import io.fluidsonic.gradle.*
 import org.jetbrains.kotlin.gradle.plugin.*
 
 plugins {
-	id("com.github.fluidsonic.fluid-library") version "0.9.25"
+	id("io.fluidsonic.gradle") version "1.0.0"
 }
 
-fluidJvmLibrary {
-	name = "fluid-compiler"
-	version = "0.9.6"
-}
+fluidJvmLibrary(name = "compiler", version = "0.9.7")
 
-fluidJvmLibraryVariant {
+fluidJvmLibraryVariant(JvmTarget.jdk8) {
 	description = "Compile Kotlin code and run Kapt annotation processing directly from Kotlin"
-	jdk = JvmTarget.jdk8
 }
 
 dependencies {
-	api(fluid("stdlib", "0.9.25")) {
+	api(fluid("stdlib", "0.9.28")) {
 		attributes {
 			attribute(KotlinPlatformType.attribute, KotlinPlatformType.jvm)
 			attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage::class.java, Usage.JAVA_RUNTIME))

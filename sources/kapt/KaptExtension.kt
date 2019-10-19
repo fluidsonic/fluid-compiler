@@ -1,4 +1,4 @@
-package com.github.fluidsonic.fluid.compiler
+package io.fluidsonic.compiler
 
 import org.jetbrains.kotlin.base.kapt3.*
 import org.jetbrains.kotlin.config.*

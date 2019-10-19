@@ -1,6 +1,6 @@
-package com.github.fluidsonic.fluid.compiler
+package io.fluidsonic.compiler
 
-import com.github.fluidsonic.fluid.stdlib.*
+import io.fluidsonic.stdlib.*
 import java.io.*
 import java.net.*
 

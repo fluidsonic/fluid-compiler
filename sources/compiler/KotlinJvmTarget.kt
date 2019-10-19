@@ -1,4 +1,4 @@
-package com.github.fluidsonic.fluid.compiler
+package io.fluidsonic.compiler
 
 
 enum class KotlinJvmTarget(internal val string: String) {

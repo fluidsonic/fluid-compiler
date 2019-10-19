@@ -1,6 +1,6 @@
-package com.github.fluidsonic.fluid.compiler
+package io.fluidsonic.compiler
 
-import com.github.fluidsonic.fluid.stdlib.*
+import io.fluidsonic.stdlib.*
 import org.jetbrains.kotlin.base.kapt3.*
 import org.jetbrains.kotlin.cli.common.arguments.*
 import org.jetbrains.kotlin.cli.common.messages.*
