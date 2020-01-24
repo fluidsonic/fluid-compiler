@@ -78,7 +78,7 @@ internal class KaptComponentRegistrar() : ComponentRegistrar {
 		)
 
 		AnalysisHandlerExtension.registerExtension(project, kapt3AnalysisCompletedHandlerExtension)
-		StorageComponentContainerContributor.registerExtension(project, Kapt3ComponentRegistrar.KaptComponentContributor())
+		StorageComponentContainerContributor.registerExtension(project, Kapt3ComponentRegistrar.KaptComponentContributor(kapt3AnalysisCompletedHandlerExtension))
 	}
 
 

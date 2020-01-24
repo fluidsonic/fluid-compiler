@@ -109,7 +109,7 @@ internal fun loadToolsJarIfNeeded(): Boolean {
 }
 
 
-private fun findToolsJar() =
+private fun findToolsJar(): File? =
 	System.getProperty("java.home").ifEmpty { null }?.let(::File)?.let(::findToolsJar)
 		?: System.getenv("JAVA_HOME").ifEmpty { null }?.let(::File)?.let(::findToolsJar)
 
