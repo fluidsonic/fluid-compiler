@@ -2,10 +2,10 @@ import io.fluidsonic.gradle.*
 import org.jetbrains.kotlin.gradle.plugin.*
 
 plugins {
-	id("io.fluidsonic.gradle") version "1.0.6"
+	id("io.fluidsonic.gradle") version "1.0.7"
 }
 
-fluidJvmLibrary(name = "compiler", version = "0.9.8")
+fluidJvmLibrary(name = "compiler", version = "0.9.9")
 
 fluidJvmLibraryVariant(JvmTarget.jdk8) {
 	description = "Compile Kotlin code and run Kapt annotation processing directly from Kotlin"
