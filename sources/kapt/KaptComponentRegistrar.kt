@@ -15,6 +15,7 @@ import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.extensions.*
 import org.jetbrains.kotlin.kapt3.*
 import org.jetbrains.kotlin.kapt3.base.*
+import org.jetbrains.kotlin.kapt3.base.incremental.*
 import org.jetbrains.kotlin.kapt3.base.util.*
 import org.jetbrains.kotlin.kapt3.util.*
 import org.jetbrains.kotlin.psi.*
@@ -74,7 +75,13 @@ internal class KaptComponentRegistrar() : ComponentRegistrar {
 			compilerConfiguration = configuration,
 			logger = logger,
 			options = options,
-			processors = kaptConfiguration.processors
+			processors = kaptConfiguration.processors.map { processor ->
+				IncrementalProcessor(
+					processor = processor,
+					kind = DeclaredProcType.NON_INCREMENTAL,
+					logger = logger
+				)
+			}
 		)
 
 		AnalysisHandlerExtension.registerExtension(project, kapt3AnalysisCompletedHandlerExtension)
