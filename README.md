@@ -16,7 +16,7 @@ Installation
 `build.gradle.kts`:
 ```kotlin
 dependencies {
-    implementation("io.fluidsonic.compiler:fluid-compiler:0.9.10")
+    implementation("io.fluidsonic.compiler:fluid-compiler:0.10.0")
 }
 ```
 
