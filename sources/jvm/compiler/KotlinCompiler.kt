@@ -14,7 +14,7 @@ import java.io.*
 import javax.annotation.processing.*
 
 
-class KotlinCompiler {
+public class KotlinCompiler {
 
 	@PublishedApi
 	internal val arguments = K2JVMCompilerArguments().apply {
@@ -33,7 +33,7 @@ class KotlinCompiler {
 	internal val processors = mutableListOf<Processor>()
 
 
-	fun compile(): CompilationResult {
+	public fun compile(): CompilationResult {
 		// TODO lots of backup here unless we make K2JVMCompilerArguments copyable - but then we have to update the copy method with every compiler update…
 		val initialClasspath = arguments.classpath
 		val initialNoStdlib = arguments.noStdlib
@@ -149,78 +149,78 @@ class KotlinCompiler {
 	}
 
 
-	inline fun arguments(block: K2JVMCompilerArguments.() -> Unit): KotlinCompiler = apply {
+	public inline fun arguments(block: K2JVMCompilerArguments.() -> Unit): KotlinCompiler = apply {
 		arguments.block()
 	}
 
 
-	fun destination(destination: File): KotlinCompiler = apply {
+	public fun destination(destination: File): KotlinCompiler = apply {
 		arguments.destination = destination.canonicalPath
 	}
 
 
-	fun destination(destination: String): KotlinCompiler =
+	public fun destination(destination: String): KotlinCompiler =
 		destination(File(destination))
 
 
-	fun includesCurrentClasspath(includesCurrentClasspath: Boolean = true): KotlinCompiler = apply {
+	public fun includesCurrentClasspath(includesCurrentClasspath: Boolean = true): KotlinCompiler = apply {
 		this.includesCurrentClasspath = includesCurrentClasspath
 	}
 
 
-	fun jvmTarget(jvmTarget: KotlinJvmTarget): KotlinCompiler = apply {
+	public fun jvmTarget(jvmTarget: KotlinJvmTarget): KotlinCompiler = apply {
 		arguments.jvmTarget = jvmTarget.string
 	}
 
 
-	inline fun kaptOptions(block: KaptOptions.Builder.() -> Unit): KotlinCompiler = apply {
+	public inline fun kaptOptions(block: KaptOptions.Builder.() -> Unit): KotlinCompiler = apply {
 		kaptOptionsModified = true
 		kaptOptions.block()
 	}
 
 
-	fun kotlinHome(kotlinHome: File): KotlinCompiler = apply {
+	public fun kotlinHome(kotlinHome: File): KotlinCompiler = apply {
 		arguments.kotlinHome = kotlinHome.canonicalPath
 	}
 
 
-	fun kotlinHome(kotlinHome: String): KotlinCompiler =
+	public fun kotlinHome(kotlinHome: String): KotlinCompiler =
 		kotlinHome(File(kotlinHome))
 
 
-	fun moduleName(moduleName: String): KotlinCompiler = apply {
+	public fun moduleName(moduleName: String): KotlinCompiler = apply {
 		arguments.moduleName = moduleName
 	}
 
 
-	fun processors(vararg processors: Processor): KotlinCompiler =
+	public fun processors(vararg processors: Processor): KotlinCompiler =
 		processors(processors.toList())
 
 
-	fun processors(processors: Iterable<Processor>): KotlinCompiler = apply {
+	public fun processors(processors: Iterable<Processor>): KotlinCompiler = apply {
 		this.processors += processors
 	}
 
 
-	fun sources(vararg sources: File): KotlinCompiler =
+	public fun sources(vararg sources: File): KotlinCompiler =
 		sources(sources.toList())
 
 
-	fun sources(sourceFiles: Iterable<File>): KotlinCompiler = apply {
+	public fun sources(sourceFiles: Iterable<File>): KotlinCompiler = apply {
 		arguments.freeArgs += sourceFiles.map { it.canonicalPath }
 	}
 
 
-	fun sources(vararg sources: String): KotlinCompiler =
+	public fun sources(vararg sources: String): KotlinCompiler =
 		sources(sources.map(::File))
 
 
 	@JvmName("sourcesAsString")
-	fun sources(sources: Iterable<String>): KotlinCompiler =
+	public fun sources(sources: Iterable<String>): KotlinCompiler =
 		sources(sources.map(::File))
 
 
-	companion object {
+	public companion object {
 
 		private val currentClasspath = findAllClasspathEntries().filter(File::exists).toSet()
 
@@ -231,8 +231,7 @@ class KotlinCompiler {
 				?.let { file ->
 					if (file.isFile) file // in JAR
 					else file.parentFile.resolve("resources") // run from IntelliJ IDEA
-				}
-				?.let { it.canonicalPath }
+				}?.canonicalPath
 		} ?: File("resources").canonicalPath // fall back to working directory = project path
 	}
 }

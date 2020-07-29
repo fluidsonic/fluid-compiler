@@ -22,7 +22,7 @@ internal class InMemoryMessageCollector : MessageCollector {
 		get() = _messages.toList()
 
 
-	override fun report(severity: CompilerMessageSeverity, message: String, location: CompilerMessageLocation?) {
+	override fun report(severity: CompilerMessageSeverity, message: String, location: CompilerMessageSourceLocation?) {
 		if (severity.isError)
 			hasErrors = true
 

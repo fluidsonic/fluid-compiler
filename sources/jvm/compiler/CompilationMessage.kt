@@ -3,8 +3,8 @@ package io.fluidsonic.compiler
 import org.jetbrains.kotlin.cli.common.messages.*
 
 
-data class CompilationMessage(
-	val location: CompilerMessageLocation?,
+public data class CompilationMessage(
+	val location: CompilerMessageSourceLocation?,
 	val message: String,
 	val severity: CompilerMessageSeverity
 ) {

@@ -26,8 +26,8 @@ private val ClassLoader.urlClassPath: Any?
 	get() = try {
 		(this is URLClassLoader || this::class.java.name == appClassLoaderName).thenTake {
 			this::class.java.getDeclaredField("ucp")
-				?.also { it.isAccessible = true }
-				?.let { it.get(this) }
+				.also { it.isAccessible = true }
+				.get(this)
 		}
 	}
 	catch (e: Exception) {
@@ -45,7 +45,7 @@ private val ClassLoader.urls: Collection<URL>?
 			try {
 				urlClassPath?.let { urlClassPath ->
 					urlClassPath::class.java.getDeclaredMethod("getURLs")
-						?.invoke(urlClassPath)
+						.invoke(urlClassPath)
 						?.let { it as? Array<URL> }
 						?.toList()
 				}
@@ -99,12 +99,12 @@ internal fun loadToolsJarIfNeeded(): Boolean {
 	val toolsJar = findToolsJar() ?: return false
 	ClassLoader.getSystemClassLoader().addUrl(toolsJar.toURI().toURL())
 
-	try {
+	return try {
 		Class.forName("com.sun.tools.javac.util.Context")
-		return true
+		true
 	}
 	catch (e: ClassNotFoundException) {
-		return false
+		false
 	}
 }
 

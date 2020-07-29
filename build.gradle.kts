@@ -1,25 +1,21 @@
 import io.fluidsonic.gradle.*
-import org.jetbrains.kotlin.gradle.plugin.*
 
 plugins {
-	id("io.fluidsonic.gradle") version "1.0.9"
+	id("io.fluidsonic.gradle") version "1.1.0"
 }
 
-fluidJvmLibrary(name = "compiler", version = "0.9.10")
+fluidLibrary(name = "compiler", version = "0.9.10")
 
-fluidJvmLibraryVariant(JvmTarget.jdk8) {
-	description = "Compile Kotlin code and run Kapt annotation processing directly from Kotlin"
-}
+fluidLibraryModule(description = "Compile Kotlin code and run Kapt annotation processing directly from Kotlin") {
+	publishSingleTargetAsModule()
 
-dependencies {
-	api(fluid("stdlib", "0.9.30")) {
-		attributes {
-			attribute(KotlinPlatformType.attribute, KotlinPlatformType.jvm)
-			attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage::class.java, Usage.JAVA_RUNTIME))
-			attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 8)
+	targets {
+		jvm {
+			dependencies {
+				api(fluid("stdlib", "0.10.0"))
+				api(kotlin("compiler-embeddable"))
+				api(kotlin("annotation-processing-embeddable"))
+			}
 		}
 	}
-
-	api("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.3.70")
-	api("org.jetbrains.kotlin:kotlin-annotation-processing-embeddable:1.3.70")
 }

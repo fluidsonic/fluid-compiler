@@ -3,7 +3,7 @@ package io.fluidsonic.compiler
 import java.io.*
 
 
-data class GeneratedFile(
+public data class GeneratedFile(
 	val content: String,
 	val path: File
 )

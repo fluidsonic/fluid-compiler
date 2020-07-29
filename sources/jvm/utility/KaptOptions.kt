@@ -3,7 +3,7 @@ package io.fluidsonic.compiler
 import org.jetbrains.kotlin.base.kapt3.*
 
 
-fun KaptOptions.toBuilder(): KaptOptions.Builder = let { options ->
+public fun KaptOptions.toBuilder(): KaptOptions.Builder = let { options ->
 	KaptOptions.Builder().apply {
 		classesOutputDir = options.classesOutputDir
 		compileClasspath += options.compileClasspath
