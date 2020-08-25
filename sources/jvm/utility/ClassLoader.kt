@@ -1,6 +1,5 @@
 package io.fluidsonic.compiler
 
-import io.fluidsonic.stdlib.*
 import java.io.*
 import java.net.*
 
