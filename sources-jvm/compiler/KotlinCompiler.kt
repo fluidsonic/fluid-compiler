@@ -11,12 +11,13 @@ import org.jetbrains.kotlin.config.*
 import org.jetbrains.kotlin.idea.*
 import java.io.*
 import javax.annotation.processing.*
+import kotlin.io.path.*
 
 
 public class KotlinCompiler {
 
 	@PublishedApi
-	internal val arguments = K2JVMCompilerArguments().apply {
+	internal val arguments: K2JVMCompilerArguments = K2JVMCompilerArguments().apply {
 		compileJava = true
 		useJavac = true
 	}
@@ -24,14 +25,15 @@ public class KotlinCompiler {
 	private var includesCurrentClasspath = false
 
 	@PublishedApi
-	internal val kaptOptions = KaptOptions.Builder()
+	internal val kaptOptions: KaptOptions.Builder = KaptOptions.Builder()
 
 	@PublishedApi
-	internal var kaptOptionsModified = false
+	internal var kaptOptionsModified: Boolean = false
 
 	internal val processors = mutableListOf<Processor>()
 
 
+	@OptIn(ExperimentalPathApi::class)
 	public fun compile(): CompilationResult {
 		// TODO lots of backup here unless we make K2JVMCompilerArguments copyable - but then we have to update the copy method with every compiler update…
 		val initialClasspath = arguments.classpath
@@ -43,19 +45,19 @@ public class KotlinCompiler {
 		val needsDummyKotlinFile = arguments.buildFile == null && !arguments.script && hasOnlyJavaSources(arguments.freeArgs)
 
 		val temporaryOutputDirectory = arguments.destination.isNullOrEmpty().thenTake {
-			createTempDir().also { arguments.destination = it.path }
+			createTempDirectory().also { arguments.destination = it.toString() }
 		}
 		val temporaryGeneratedSourcesDirectory = (usesKapt && kaptOptions.sourcesOutputDir == null).thenTake {
-			createTempDir().also { kaptOptions.sourcesOutputDir = it }
+			createTempDirectory().also { kaptOptions.sourcesOutputDir = it.toFile() }
 		}
 		val temporaryGeneratedClassesDirectory = (usesKapt && kaptOptions.classesOutputDir == null).thenTake {
-			createTempDir().also { kaptOptions.classesOutputDir = it }
+			createTempDirectory().also { kaptOptions.classesOutputDir = it.toFile() }
 		}
 		val temporaryGeneratedStubsDirectory = (usesKapt && kaptOptions.stubsOutputDir == null).thenTake {
-			createTempDir().also { kaptOptions.stubsOutputDir = it }
+			createTempDirectory().also { kaptOptions.stubsOutputDir = it.toFile() }
 		}
 		val dummyKotlinFile = needsDummyKotlinFile.thenTake {
-			createTempFile(suffix = ".kt").also { arguments.freeArgs += it.canonicalPath }
+			createTempFile(suffix = ".kt").normalize().also { arguments.freeArgs += it.toString() }
 		}
 
 		try {
@@ -98,12 +100,12 @@ public class KotlinCompiler {
 				)
 			}
 
-			val generatedFiles = temporaryGeneratedSourcesDirectory?.walkTopDown()
+			val generatedFiles = temporaryGeneratedSourcesDirectory?.toFile()?.walkTopDown()
 				?.filter { it.isFile }
 				?.map { file ->
 					GeneratedFile(
 						content = file.readText(),
-						path = file.relativeTo(temporaryGeneratedSourcesDirectory)
+						path = file.relativeTo(temporaryGeneratedSourcesDirectory.toFile())
 					)
 				}
 				?.toList()
@@ -123,23 +125,23 @@ public class KotlinCompiler {
 
 			try {
 				if (temporaryOutputDirectory != null) {
-					temporaryOutputDirectory.deleteRecursively()
+					temporaryOutputDirectory.toFile().deleteRecursively()
 					arguments.destination = null
 				}
 				if (temporaryGeneratedSourcesDirectory != null) {
-					temporaryGeneratedSourcesDirectory.deleteRecursively()
+					temporaryGeneratedSourcesDirectory.toFile().deleteRecursively()
 					kaptOptions.sourcesOutputDir = null
 				}
 				if (temporaryGeneratedClassesDirectory != null) {
-					temporaryGeneratedClassesDirectory.deleteRecursively()
+					temporaryGeneratedClassesDirectory.toFile().deleteRecursively()
 					kaptOptions.classesOutputDir = null
 				}
 				if (temporaryGeneratedStubsDirectory != null) {
-					temporaryGeneratedStubsDirectory.deleteRecursively()
+					temporaryGeneratedStubsDirectory.toFile().deleteRecursively()
 					kaptOptions.stubsOutputDir = null
 				}
 
-				dummyKotlinFile?.delete()
+				dummyKotlinFile?.deleteIfExists()
 			}
 			catch (e: Exception) {
 				println("Failed deleting temporary file or directory: $e")
