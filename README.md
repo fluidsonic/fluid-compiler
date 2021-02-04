@@ -17,8 +17,7 @@ Installation
 
 ```kotlin
 dependencies {
-	implementation("io.fluidsonic.compiler:fluid-compiler:0.10.3-kotlin-1.5") // Kotlin 1.4.30 (language version 1.5)
-	implementation("io.fluidsonic.compiler:fluid-compiler:0.10.2")            // Kotlin 1.4.*
+	implementation("io.fluidsonic.compiler:fluid-compiler:0.10.2")
 }
 ```
 
