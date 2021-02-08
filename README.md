@@ -16,7 +16,7 @@ Installation
 
 ```kotlin
 dependencies {
-	implementation("io.fluidsonic.compiler:fluid-compiler:0.10.2")
+	implementation("io.fluidsonic.compiler:fluid-compiler:0.10.4")
 }
 ```
 

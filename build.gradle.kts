@@ -4,7 +4,7 @@ plugins {
 	id("io.fluidsonic.gradle") version "1.1.21"
 }
 
-fluidLibrary(name = "compiler", version = "0.10.4-kotlin-1.5")
+fluidLibrary(name = "compiler", version = "0.10.4")
 
 fluidLibraryModule(description = "Compile Kotlin code and run Kapt annotation processing directly from Kotlin") {
 	targets {
