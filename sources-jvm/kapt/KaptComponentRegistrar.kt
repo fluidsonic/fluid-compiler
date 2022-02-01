@@ -157,7 +157,7 @@ internal class KaptComponentRegistrar() : ComponentRegistrar {
 			files: Collection<KtFile>,
 			bindingTrace: BindingTrace,
 			componentProvider: ComponentProvider
-		): AnalysisResult? {
+		): AnalysisResult {
 			return AnalysisResult.success(bindingTrace.bindingContext, module, shouldGenerateCode = false)
 		}
 
@@ -166,7 +166,7 @@ internal class KaptComponentRegistrar() : ComponentRegistrar {
 			module: ModuleDescriptor,
 			bindingTrace: BindingTrace,
 			files: Collection<KtFile>
-		): AnalysisResult? {
+		): AnalysisResult {
 			return AnalysisResult.success(bindingTrace.bindingContext, module, shouldGenerateCode = false)
 		}
 	}
