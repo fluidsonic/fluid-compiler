@@ -81,7 +81,6 @@ private fun findSystemPropertyClasspathEntries(): Collection<File> =
 	System.getProperty("java.class.path").split(':').map(::File)
 
 
-@Suppress("UNCHECKED_CAST")
 private fun ClassLoader.findAllClasspathEntries(): Collection<File> =
 	urls?.map { File(it.toURI()) }.orEmpty() + parent?.findAllClasspathEntries().orEmpty()
 

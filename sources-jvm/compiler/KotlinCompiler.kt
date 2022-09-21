@@ -33,7 +33,6 @@ public class KotlinCompiler {
 	internal val processors = mutableListOf<Processor>()
 
 
-	@OptIn(ExperimentalPathApi::class)
 	public fun compile(): CompilationResult {
 		// TODO lots of backup here unless we make K2JVMCompilerArguments copyable - but then we have to update the copy method with every compiler update…
 		val initialClasspath = arguments.classpath
