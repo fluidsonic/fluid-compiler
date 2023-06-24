@@ -28,6 +28,7 @@ import kotlin.collections.set
 private val kaptConfiguration = ThreadLocal<KaptConfiguration?>()
 
 
+@OptIn(ExperimentalCompilerApi::class)
 internal class KaptComponentRegistrar : ComponentRegistrar {
 
 	// https://github.com/JetBrains/kotlin/blob/d6459e6c49227be11323ce59310407b17005c117/plugins/kapt3/kapt3-compiler/src/org/jetbrains/kotlin/kapt3/Kapt3Plugin.kt#L150
