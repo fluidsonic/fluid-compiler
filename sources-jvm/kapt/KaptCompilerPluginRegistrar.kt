@@ -81,6 +81,10 @@ internal class FluidFirKaptExtension : FirKaptAnalysisHandlerExtension() {
 					)
 				}
 			}
+			val sourcesPath = sourcesOutputDir?.absolutePath
+			if (sourcesPath != null && !processingOptions.containsKey("kapt.kotlin.generated")) {
+				processingOptions["kapt.kotlin.generated"] = sourcesPath
+			}
 		}
 
 		val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY)

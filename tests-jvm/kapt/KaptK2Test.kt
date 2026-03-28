@@ -115,6 +115,32 @@ class KaptK2Test {
 
 
 	@Test
+	fun k2_kapt_kotlinGeneratedOptionIsSet() {
+		val sourceFile = tempDir!!.resolve("Hello.kt").toFile()
+		sourceFile.writeText("class Hello")
+
+		var kotlinGeneratedPath: String? = null
+		val processor = object : AbstractProcessor() {
+			override fun getSupportedAnnotationTypes() = setOf("*")
+			override fun getSupportedSourceVersion(): SourceVersion = SourceVersion.latestSupported()
+			override fun process(annotations: Set<TypeElement>, roundEnv: RoundEnvironment): Boolean {
+				kotlinGeneratedPath = processingEnv.options["kapt.kotlin.generated"]
+				return false
+			}
+		}
+
+		val result = newCompiler()
+			.sources(sourceFile)
+			.jvmTarget(KotlinJvmTarget.v21)
+			.processors(processor)
+			.compile()
+
+		assertEquals(actual = result.exitCode, expected = ExitCode.OK)
+		assertNotNull(kotlinGeneratedPath, "kapt.kotlin.generated processing option must be set")
+	}
+
+
+	@Test
 	fun k2_kapt_worksWithoutExplicitLanguageVersion() {
 		val sourceFile = tempDir!!.resolve("Hello.kt").toFile()
 		sourceFile.writeText("class Hello")
