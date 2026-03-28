@@ -1,7 +1,6 @@
 package io.fluidsonic.compiler
 
 import org.jetbrains.kotlin.analyzer.*
-import org.jetbrains.kotlin.base.kapt3.*
 import org.jetbrains.kotlin.cli.common.*
 import org.jetbrains.kotlin.cli.common.messages.*
 import org.jetbrains.kotlin.cli.jvm.config.*
@@ -13,11 +12,11 @@ import org.jetbrains.kotlin.container.*
 import org.jetbrains.kotlin.context.*
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.extensions.*
-import org.jetbrains.kotlin.kapt3.*
-import org.jetbrains.kotlin.kapt3.base.*
-import org.jetbrains.kotlin.kapt3.base.incremental.*
-import org.jetbrains.kotlin.kapt3.base.util.*
-import org.jetbrains.kotlin.kapt3.util.*
+import org.jetbrains.kotlin.kapt.*
+import org.jetbrains.kotlin.kapt.base.*
+import org.jetbrains.kotlin.kapt.base.incremental.*
+import org.jetbrains.kotlin.kapt.base.util.*
+import org.jetbrains.kotlin.kapt.util.*
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.*
 import org.jetbrains.kotlin.resolve.jvm.extensions.*
@@ -28,6 +27,7 @@ import kotlin.collections.set
 private val kaptConfiguration = ThreadLocal<KaptConfiguration?>()
 
 
+@Suppress("DEPRECATION", "DEPRECATION_ERROR")
 @OptIn(ExperimentalCompilerApi::class)
 internal class KaptComponentRegistrar : ComponentRegistrar {
 
@@ -45,7 +45,7 @@ internal class KaptComponentRegistrar : ComponentRegistrar {
 			classesOutputDir = classesOutputDir ?: configuration.get(JVMConfigurationKeys.OUTPUT_DIRECTORY)
 		}
 
-		val messageCollector = configuration.get(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY)
+		val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY)
 			?: PrintingMessageCollector(System.err, MessageRenderer.PLAIN_FULL_PATHS, optionsBuilder.flags.contains(KaptFlag.VERBOSE))
 
 		val logger = MessageCollectorBackedKaptLogger(
@@ -85,7 +85,7 @@ internal class KaptComponentRegistrar : ComponentRegistrar {
 		)
 
 		AnalysisHandlerExtension.registerExtension(project, kapt3AnalysisCompletedHandlerExtension)
-		StorageComponentContainerContributor.registerExtension(project, Kapt3ComponentRegistrar.KaptComponentContributor(kapt3AnalysisCompletedHandlerExtension))
+		StorageComponentContainerContributor.registerExtension(project, org.jetbrains.kotlin.kapt.KaptComponentRegistrar.KaptComponentContributor(kapt3AnalysisCompletedHandlerExtension))
 	}
 
 

@@ -1,11 +1,10 @@
 package io.fluidsonic.compiler
 
-import org.jetbrains.kotlin.base.kapt3.*
 import org.jetbrains.kotlin.config.*
-import org.jetbrains.kotlin.kapt3.*
-import org.jetbrains.kotlin.kapt3.base.*
-import org.jetbrains.kotlin.kapt3.base.incremental.*
-import org.jetbrains.kotlin.kapt3.util.*
+import org.jetbrains.kotlin.kapt.*
+import org.jetbrains.kotlin.kapt.base.*
+import org.jetbrains.kotlin.kapt.base.incremental.*
+import org.jetbrains.kotlin.kapt.util.*
 
 
 internal class KaptExtension(
@@ -13,7 +12,7 @@ internal class KaptExtension(
 	logger: MessageCollectorBackedKaptLogger,
 	options: KaptOptions,
 	processors: Collection<IncrementalProcessor>
-) : AbstractKapt3Extension(
+) : AbstractKaptExtension(
 	compilerConfiguration = compilerConfiguration,
 	logger = logger,
 	options = options

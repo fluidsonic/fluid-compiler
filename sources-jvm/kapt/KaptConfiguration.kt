@@ -1,6 +1,6 @@
 package io.fluidsonic.compiler
 
-import org.jetbrains.kotlin.base.kapt3.*
+import org.jetbrains.kotlin.kapt.base.*
 import javax.annotation.processing.*
 
 

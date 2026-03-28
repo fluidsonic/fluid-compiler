@@ -1,8 +1,10 @@
 package io.fluidsonic.compiler
 
-import org.jetbrains.kotlin.base.kapt3.*
+import org.jetbrains.kotlin.kapt.base.*
 
 
+/** Creates a mutable [KaptOptions.Builder] with all values copied from this [KaptOptions] instance. */
+@Deprecated("KAPT is deprecated. Migrate to KSP.", level = DeprecationLevel.WARNING)
 public fun KaptOptions.toBuilder(): KaptOptions.Builder = let { options ->
 	KaptOptions.Builder().apply {
 		classesOutputDir = options.classesOutputDir
@@ -19,7 +21,7 @@ public fun KaptOptions.toBuilder(): KaptOptions.Builder = let { options ->
 		sourcesOutputDir = options.sourcesOutputDir
 		stubsOutputDir = options.stubsOutputDir
 
-		for (flag in KaptFlag.values())
+		for (flag in KaptFlag.entries)
 			if (options[flag])
 				flags += flag
 			else

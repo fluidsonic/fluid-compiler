@@ -1,20 +1,18 @@
 package io.fluidsonic.compiler
 
 
+/** JVM bytecode target versions supported by the Kotlin compiler. */
 @Suppress("EnumEntryName")
 public enum class KotlinJvmTarget(internal val string: String) {
 
-	v1_6("1.6"),
-	v1_8("1.8"),
-	v9("9"),
-	v10("10"),
-	v11("11"),
-	v12("12"),
-	v13("13"),
-	v14("14"),
-	v15("15"),
-	v16("16"),
-	v17("17"),
+	/** JVM 21 bytecode target. */
+	v21("21"),
+	/** JVM 22 bytecode target. */
+	v22("22"),
+	/** JVM 23 bytecode target. */
+	v23("23"),
+	/** JVM 24 bytecode target. */
+	v24("24"),
 	;
 
 

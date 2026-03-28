@@ -2,10 +2,20 @@ fluid-compiler
 ==============
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.fluidsonic.compiler/fluid-compiler?label=Maven%20Central)](https://search.maven.org/artifact/io.fluidsonic.compiler/fluid-compiler)
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.8.22-blue.svg)](https://github.com/JetBrains/kotlin/releases/v1.8.22)
-[![#fluid-libraries Slack Channel](https://img.shields.io/badge/slack-%23fluid--libraries-543951.svg)](https://kotlinlang.slack.com/messages/C7UDFSVT2/)
+[![Tests](https://github.com/fluidsonic/fluid-compiler/workflows/Tests/badge.svg)](https://github.com/fluidsonic/fluid-compiler/actions?workflow=Tests)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.3.20%20(JVM)-blue.svg)](https://github.com/JetBrains/kotlin/releases/v2.3.20)
+[![#fluid-libraries Slack Channel](https://img.shields.io/badge/slack-%23fluid--libraries-543951.svg?label=Slack)](https://kotlinlang.slack.com/messages/C7UDFSVT2/)
 
-Compile Kotlin code and run Kapt annotation processing directly from Kotlin, for example to unit test your annotation processors!
+Compile Kotlin code and run KAPT annotation processing directly from Kotlin, for example to unit test your annotation processors!
+
+> **Note:** KAPT APIs (`processors()`, `kaptOptions()`) are deprecated. Migrate to KSP when possible.
+
+
+Requirements
+------------
+
+- Kotlin 2.3+
+- JDK 21+
 
 
 
@@ -16,7 +26,7 @@ Installation
 
 ```kotlin
 dependencies {
-	implementation("io.fluidsonic.compiler:fluid-compiler:0.13.0")
+	implementation("io.fluidsonic.compiler:fluid-compiler:0.14.0")
 }
 ```
 
@@ -28,7 +38,7 @@ import io.fluidsonic.compiler.*
 
 val result = KotlinCompiler()
 	.includesCurrentClasspath()
-	.jvmTarget(KotlinJvmTarget.v1_8)
+	.jvmTarget(KotlinJvmTarget.v21)
 	.processors(MyAnnotationProcessor())
 	.sources("sources", "more-sources/Example.kt")
 	.compile()

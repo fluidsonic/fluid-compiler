@@ -1,9 +1,8 @@
 package io.fluidsonic.compiler
 
-import org.jetbrains.kotlin.base.kapt3.*
+import org.jetbrains.kotlin.kapt.base.*
 import org.jetbrains.kotlin.cli.common.arguments.*
 import org.jetbrains.kotlin.cli.common.messages.*
-import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity.*
 import org.jetbrains.kotlin.cli.jvm.*
 import org.jetbrains.kotlin.com.intellij.ide.highlighter.*
 import org.jetbrains.kotlin.com.intellij.openapi.application.*
@@ -14,6 +13,7 @@ import javax.annotation.processing.*
 import kotlin.io.path.*
 
 
+/** Compiles Kotlin code programmatically using the Kotlin compiler embeddable. */
 public class KotlinCompiler {
 
 	@PublishedApi
@@ -33,6 +33,7 @@ public class KotlinCompiler {
 	internal val processors = mutableListOf<Processor>()
 
 
+	/** Compiles the configured sources and returns the compilation result. */
 	public fun compile(): CompilationResult {
 		// TODO lots of backup here unless we make K2JVMCompilerArguments copyable - but then we have to update the copy method with every compiler update…
 		val initialClasspath = arguments.classpath
@@ -43,28 +44,26 @@ public class KotlinCompiler {
 		val usesKapt = processors.isNotEmpty()
 		val needsDummyKotlinFile = arguments.buildFile == null && !arguments.script && hasOnlyJavaSources(arguments.freeArgs)
 
-		val temporaryOutputDirectory = arguments.destination.isNullOrEmpty().thenTake {
+		val temporaryOutputDirectory = if (arguments.destination.isNullOrEmpty())
 			createTempDirectory().also { arguments.destination = it.toString() }
-		}
-		val temporaryGeneratedSourcesDirectory = (usesKapt && kaptOptions.sourcesOutputDir == null).thenTake {
+		else null
+		val temporaryGeneratedSourcesDirectory = if (usesKapt && kaptOptions.sourcesOutputDir == null)
 			createTempDirectory().also { kaptOptions.sourcesOutputDir = it.toFile() }
-		}
-		val temporaryGeneratedClassesDirectory = (usesKapt && kaptOptions.classesOutputDir == null).thenTake {
+		else null
+		val temporaryGeneratedClassesDirectory = if (usesKapt && kaptOptions.classesOutputDir == null)
 			createTempDirectory().also { kaptOptions.classesOutputDir = it.toFile() }
-		}
-		val temporaryGeneratedStubsDirectory = (usesKapt && kaptOptions.stubsOutputDir == null).thenTake {
+		else null
+		val temporaryGeneratedStubsDirectory = if (usesKapt && kaptOptions.stubsOutputDir == null)
 			createTempDirectory().also { kaptOptions.stubsOutputDir = it.toFile() }
-		}
-		val dummyKotlinFile = needsDummyKotlinFile.thenTake {
+		else null
+		val dummyKotlinFile = if (needsDummyKotlinFile)
 			createTempFile(suffix = ".kt").normalize().also { arguments.freeArgs += it.toString() }
-		}
+		else null
 
 		try {
-			if (!loadToolsJarIfNeeded())
-				error("tools.jar is missing in the current classpath and cannot be found in JAVA HOME. Please add it manually to your project.")
-
-			arguments.pluginClasspaths = (arguments.pluginClasspaths.orEmpty()
-				.filter { it != servicesPath } + servicesPath).toTypedArray()
+			if (usesKapt)
+				arguments.pluginClasspaths = (arguments.pluginClasspaths.orEmpty()
+					.filter { it != servicesPath } + servicesPath).toTypedArray()
 
 			if (includesCurrentClasspath) {
 				arguments.classpath = arguments.classpath
@@ -79,7 +78,7 @@ public class KotlinCompiler {
 			}
 
 			val messageCollector = InMemoryMessageCollector()
-			val kaptConfiguration = usesKapt.thenTake {
+			val kaptConfiguration = if (usesKapt)
 				KaptConfiguration(
 					options = try {
 						kaptOptions.build()
@@ -89,11 +88,11 @@ public class KotlinCompiler {
 					},
 					processors = processors
 				)
-			}
+			else null
 
 			val exitCode = withKaptConfiguration(kaptConfiguration) {
 				K2JVMCompiler().exec(
-					messageCollector = FilteringMessageCollector(messageCollector, VERBOSE::contains),
+					messageCollector = FilteringMessageCollector(messageCollector, CompilerMessageSeverity.VERBOSE::contains),
 					services = Services.EMPTY,
 					arguments = arguments
 				)
@@ -149,72 +148,90 @@ public class KotlinCompiler {
 	}
 
 
+	/** Configures the underlying [K2JVMCompilerArguments] directly. */
 	public inline fun arguments(block: K2JVMCompilerArguments.() -> Unit): KotlinCompiler = apply {
 		arguments.block()
 	}
 
 
+	/** Sets the output directory for compiled classes. */
 	public fun destination(destination: File): KotlinCompiler = apply {
 		arguments.destination = destination.canonicalPath
 	}
 
 
+	/** Sets the output directory for compiled classes. */
 	public fun destination(destination: String): KotlinCompiler =
 		destination(File(destination))
 
 
+	/** Includes the current process classpath in the compilation classpath. */
 	public fun includesCurrentClasspath(includesCurrentClasspath: Boolean = true): KotlinCompiler = apply {
 		this.includesCurrentClasspath = includesCurrentClasspath
 	}
 
 
+	/** Sets the JVM bytecode target version. */
 	public fun jvmTarget(jvmTarget: KotlinJvmTarget): KotlinCompiler = apply {
 		arguments.jvmTarget = jvmTarget.string
 	}
 
 
+	/** Configures KAPT annotation processing options. */
+	@Deprecated("KAPT is deprecated. Migrate to KSP.", level = DeprecationLevel.WARNING)
 	public inline fun kaptOptions(block: KaptOptions.Builder.() -> Unit): KotlinCompiler = apply {
 		kaptOptionsModified = true
 		kaptOptions.block()
 	}
 
 
+	/** Sets the Kotlin home directory for the compiler. */
 	public fun kotlinHome(kotlinHome: File): KotlinCompiler = apply {
 		arguments.kotlinHome = kotlinHome.canonicalPath
 	}
 
 
+	/** Sets the Kotlin home directory for the compiler. */
 	public fun kotlinHome(kotlinHome: String): KotlinCompiler =
 		kotlinHome(File(kotlinHome))
 
 
+	/** Sets the module name for the compilation. */
 	public fun moduleName(moduleName: String): KotlinCompiler = apply {
 		arguments.moduleName = moduleName
 	}
 
 
+	/** Adds annotation processors for KAPT. */
+	@Deprecated("KAPT is deprecated. Migrate to KSP.", level = DeprecationLevel.WARNING)
 	public fun processors(vararg processors: Processor): KotlinCompiler =
-		processors(processors.toList())
+		@Suppress("DEPRECATION") processors(processors.toList())
 
 
+	/** Adds annotation processors for KAPT. */
+	@Deprecated("KAPT is deprecated. Migrate to KSP.", level = DeprecationLevel.WARNING)
 	public fun processors(processors: Iterable<Processor>): KotlinCompiler = apply {
 		this.processors += processors
 	}
 
 
+	/** Adds source files to compile. */
 	public fun sources(vararg sources: File): KotlinCompiler =
 		sources(sources.toList())
 
 
+	/** Adds source files to compile. */
 	public fun sources(sourceFiles: Iterable<File>): KotlinCompiler = apply {
 		arguments.freeArgs += sourceFiles.map { it.canonicalPath }
 	}
 
 
+	/** Adds source file paths to compile. */
 	public fun sources(vararg sources: String): KotlinCompiler =
 		sources(sources.map(::File))
 
 
+	/** Adds source file paths to compile. */
 	@JvmName("sourcesAsString")
 	public fun sources(sources: Iterable<String>): KotlinCompiler =
 		sources(sources.map(::File))
@@ -230,9 +247,30 @@ public class KotlinCompiler {
 				?.let { File(it).absoluteFile }
 				?.let { file ->
 					if (file.isFile) file // in JAR
-					else file.parentFile.resolve("resources") // run from IntelliJ IDEA
+					else resolveResourcesDirectory(file)
 				}?.canonicalPath
 		} ?: File("resources").canonicalPath // fall back to working directory = project path
+
+
+		private fun resolveResourcesDirectory(classOutputDir: File): File {
+			// IntelliJ IDEA: resources are a sibling of the classes directory
+			val ideaResources = classOutputDir.parentFile.resolve("resources")
+			if (ideaResources.isDirectory) return ideaResources
+
+			// Kotlin Multiplatform: classes at build/classes/kotlin/<target>/<sourceSet>,
+			// resources at build/processedResources/<target>/<sourceSet>
+			val sourceSet = classOutputDir.name // e.g. "main"
+			val target = classOutputDir.parentFile?.name // e.g. "jvm"
+			if (target != null) {
+				val buildDir = classOutputDir.parentFile?.parentFile?.parentFile?.parentFile // build/
+				if (buildDir != null) {
+					val kmpResources = buildDir.resolve("processedResources").resolve(target).resolve(sourceSet)
+					if (kmpResources.isDirectory) return kmpResources
+				}
+			}
+
+			return ideaResources // fall back to the original behavior
+		}
 	}
 }
 
