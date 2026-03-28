@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
 
+## [0.15.0] - 2026-03-28
+
+### Added
+- K2 compiler support for KAPT: annotation processors now work with language version 2.0+ via `KaptCompilerPluginRegistrar` and `FluidFirKaptExtension`.
+
+### Removed
+- K1-only KAPT implementation (`KaptComponentRegistrar`, `KaptExtension`). K2 is now the sole KAPT path.
+
+
 ## [0.14.0] - 2026-03-28
 
 ### Added
